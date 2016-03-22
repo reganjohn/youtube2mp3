@@ -10,9 +10,10 @@ if [[ $address =~ $regex ]]; then
     video_id=$(echo $video_id | cut -d'&' -f1);
     video_title="$(youtube-dl --get-title $address)"; 
     youtube-dl $address;
-    ffmpeg -hide_banner -loglevel panic -i "$video_title-$video_id".mp4 "$video_title".wav; 
-    lame "$video_title".wav "$video_title".mp3;
-    rm "$video_title-$video_id".mp4 "$video_title".wav;
+    ext=$(find * -maxdepth 0 -name "*.mp4" -o -name "*.mkv" | tail -n 1 | awk -F . '{if (NF>1) {print $NF}}')
+    ffmpeg -hide_banner -loglevel panic -i "$video_title-$video_id".$ext "$video_title".wav; 
+    lame "$video_title".wav $HOME/Downloads/"$video_title".mp3;
+    rm "$video_title-$video_id".$ext "$video_title".wav;
 else 
     echo "Sorry but the system encountered a problem." 
 fi
